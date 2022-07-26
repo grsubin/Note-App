@@ -1,0 +1,41 @@
+
+
+/api/auth/login:
+  post:
+      summary: "Logs user in"
+      tags: 
+      - "Auth Operations"
+      requestBody:
+          required: true
+          content: 
+              application/json:
+                  schema:
+                      type: "object"
+                      properties:
+                          email:
+                              type: "string"
+                              default: "string"
+                          password:
+                              type: "string"
+                              default: "string"
+      responses:
+          default: 
+              description: "Default response"
+          
+
+
+
+
+
+
+/api/auth/logout:
+  post:
+      summary: "Logs the current user session"
+      tags: 
+      - "Auth Operations"
+      security:       
+          - bearerAuth: []
+      responses:
+          "200": 
+              description: "Success"
+          

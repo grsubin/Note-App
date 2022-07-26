@@ -1,0 +1,132 @@
+/api/users:
+  get:
+      summary: "Get all Users"
+      tags: 
+      - "User Operations"
+      security:       
+          - bearerAuth: []
+      description: "Get all Users"
+      responses:
+          "200":
+              description: "Success"
+
+  post:
+      summary: "Create user"
+      tags: 
+      - "User Operations"
+      requestBody:
+          required: true
+          content: 
+              application/json:
+                  schema:
+                      type: "object"
+                      properties:
+                          id: 
+                              type: "integer"
+                              default: 0
+                          username: 
+                              type: "string"
+                              default: "string"
+                          firstName: 
+                              type: "string"
+                              default: "string"
+                          lastName: 
+                              type: "string"
+                              default: "string"
+                          email:
+                              type: "string"
+                              default: "string"
+                          password:
+                              type: "string"
+                              default: "string"
+                          phone:
+                              type: "string"
+                              default: "string"
+      responses:
+          "201": 
+              description: "Created"
+          
+
+
+
+/api/users/{username}:
+
+
+
+  get:
+      summary: "Find user by UserName"
+      tags: 
+      - "User Operations"
+      parameters:
+          - name: "username"
+            required: true
+            in: "path"
+            schema: 
+              type: "string"
+      security:       
+          - bearerAuth: []
+      responses:
+          "200":
+              description: "Success"
+
+  put:
+      summary: "Update user"
+      tags: 
+      - "User Operations"
+      security:       
+          - bearerAuth: []
+      parameters:
+          - name: "username"
+            required: true
+            in: "path"
+            schema: 
+              type: "string"
+      requestBody:
+          required: true
+          content: 
+              application/json:
+                  schema:
+                      type: "object"
+                      properties:
+                          id: 
+                              type: integer
+                              default: 0
+                          username: 
+                              type: "string"
+                              default: "string"
+                          firstName: 
+                              type: "string"
+                              default: "string"
+                          lastName: 
+                              type: "string"
+                              default: "string"
+                          email:
+                              type: "string"
+                              default: "string"
+                          password:
+                              type: "string"
+                              default: "string"
+                          phone:
+                              type: "string"
+                              default: "string"
+      responses:
+          "200": 
+              description: "Success"
+          
+  delete:
+      summary: "Delete a user"
+      tags: 
+      - "User Operations"
+      parameters:
+          - name: "username"
+            required: true
+            in: "path"
+            schema: 
+              type: "string"
+      security:       
+          - bearerAuth: []
+      responses:
+          "200":
+              description: "Success"
+
+
