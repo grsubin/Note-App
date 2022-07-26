@@ -80,23 +80,19 @@ const findUserByUsername = async(req, res, next) =>{
 const updateUser = async(req,res,next) => {
 try {
 
-       
-        const username = req.parms.username;
-        console.log(username)
-        console.log("username asdfasdfasdf"+ username);
-        const dbUser = (await pool.query("SELECT * from users WHERE username = $1", [username])).rows[0];
+        const username = req.params.username;
+        const dbUser = (await pool.query("SELECT * from users WHERE username = $1 AND deleted_at IS NULL", [username])).rows[0];
         if(!dbUser){
             throw new Error("User not available.");
         }else{
 
 
-
+   
 
             const user = req.body;
-
-            if((await pool.query("SELECT * FROM users WHERE username = $1",[user.username])).rows[0]){
+            if((await pool.query("SELECT * FROM users WHERE username = $1 AND deleted_at IS NULL",[user.username])).rows[0]){
                 throw new Error("Username already taken.");
-            }else if ((await pool.query("SELECT * FROM users WHERE email = $1", [user.email])).rows[0]){
+            }else if ((await pool.query("SELECT * FROM users WHERE email = $1 AND deleted_at IS NULL", [user.email])).rows[0]){
                 throw new Error ("Email already in use.")
             } else {
 
@@ -104,14 +100,15 @@ try {
 
                 dbUser.firstName = !user.firstName ? dbUser.firstName : user.firstName;
                 dbUser.lastName = !user.lastName ? dbUser.lastName : user.lastName;
-                dbUser.email = !user.email ? user.email : user.email;
-                dbUser.password = !user.password ? user.password : bcrypt.hashSync(user.password,8);
-                dbUser.phone = !user.phone ? user.phone : user.phone;
+                dbUser.email = !user.email ? dbUser.email : user.email;
+                dbUser.password = !user.password ? dbUser.password : bcrypt.hashSync(user.password,8);
+                dbUser.phone = !user.phone ? dbUser.phone : user.phone;
 
-                const updatedUser = (await pool("UPDATE users SET username = $1, first_name = $2, last_name = $3, email = $4, password = $5, phone = $6, updated_at = NOW()",
-                [db.username, db.firstName, db.lastName, db.email, db.password, db.phone])).rows[0];
+                const updatedUser = (await pool.query("UPDATE users SET username = $1, first_name = $2, last_name = $3, email = $4, password = $5, phone = $6, updated_at = NOW() RETURNING *",
+                [dbUser.username, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password, dbUser.phone])).rows[0];
 
-                res.json(updateUser);
+                console.log(updatedUser);
+                res.json(updatedUser);
             }
 
             
