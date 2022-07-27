@@ -88,9 +88,6 @@
                   schema:
                       type: "object"
                       properties:
-                          id: 
-                              type: integer
-                              default: 0
                           username: 
                               type: "string"
                               default: "string"

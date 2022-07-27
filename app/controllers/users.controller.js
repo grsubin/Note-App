@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 const {v4: uuidv4} = require('uuid');
 const bcrypt  = require('bcrypt');
-
+const User = require("../util/user.db.query"); 
 
 //Get all users
 const getAllUsers = async(req, res, next) => {
@@ -62,20 +62,27 @@ const findUserByUsername = async(req, res, next) =>{
     try {
 
         const username = req.params.username;
-        const dbUser = (await pool.query("SELECT * from users WHERE username = $1", [username] )).rows[0];
-        if(!dbUser){
-            throw new Error("User not available.");
-        }else{
-            res.json(dbUser);
-        }
+
+        const dbUser = await User.findOne(username);
+        // const dbUser = (await pool.query("SELECT * from users WHERE username = $1", [username] )).rows[0];
+        // if(!dbUser){
+        //     throw new Error("User not available.");
+        // }else{
+        //     res.json(dbUser);
+        // }
+        res.json(dbUser);
     } catch (error) {
 
         console.error(error.message);
-        next(error.message);
+        res.status(!error.code? 500: error.code).send({
+            message: error.message
+        });
+        // next(error.message);
         
     }
 
 };
+
 //Update User
 const updateUser = async(req,res,next) => {
 try {
@@ -112,7 +119,7 @@ try {
                 const updatedUser = (await pool.query("UPDATE users SET username = $1, first_name = $2, last_name = $3, email = $4, password = $5, phone = $6, updated_at = NOW() RETURNING *",
                 [dbUser.username, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password, dbUser.phone])).rows[0];
 
-                console.log(updatedUser);
+                console.error(updatedUser);
                 res.json(updatedUser);
             }
 
@@ -127,7 +134,6 @@ try {
     }
 
 };
-
 
 //Delete User
 const deleteUserByUsername = async(req,res,next) =>{
@@ -145,15 +151,11 @@ const deleteUserByUsername = async(req,res,next) =>{
         
     } catch (error) {
 
-        console.log(error.message);
+        console.error(error.message);
         next(error.message);
         
     }
 };
-
-
-
-
 
 module.exports = {
     createUser,
