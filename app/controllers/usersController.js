@@ -76,10 +76,12 @@ const findUserByUsername = async(req, res, next) =>{
     }
 
 };
-//Updatee User
+//Update User
 const updateUser = async(req,res,next) => {
 try {
 
+
+    //Checks if the username is available and is not deleted. 
         const username = req.params.username;
         const dbUser = (await pool.query("SELECT * from users WHERE username = $1 AND deleted_at IS NULL", [username])).rows[0];
         if(!dbUser){
@@ -87,15 +89,18 @@ try {
         }else{
 
 
-   
+            // Checks if the username is already taken and is not deleted.
 
             const user = req.body;
             if((await pool.query("SELECT * FROM users WHERE username = $1 AND deleted_at IS NULL",[user.username])).rows[0]){
                 throw new Error("Username already taken.");
+
+            // Checks if the email is already taken and is not deleted.
             }else if ((await pool.query("SELECT * FROM users WHERE email = $1 AND deleted_at IS NULL", [user.email])).rows[0]){
                 throw new Error ("Email already in use.")
             } else {
 
+                // Only updates the fields which are provided in the request body else the previous data from the database is used.
                 dbUser.username = !user.username ? dbUser.username: user.username;
 
                 dbUser.firstName = !user.firstName ? dbUser.firstName : user.firstName;
