@@ -29,7 +29,12 @@ const getAllUsers = async(req, res, next) => {
 const createUser = async(req, res, next) => {
     try {
 
-        const {username, firstName, lastName, email, password, phone} = req.body;
+        let {username , firstName, lastName, email, password, phone} = req.body;
+        username = username.toLowerCase();
+        firstName = firstName.toLowerCase();
+        lastName = lastName.toLowerCase();
+        email = email.toLowerCase();
+        
         const bcryptedPassword =  bcrypt.hashSync(password, 8);
         const guid = uuidv4();
 
