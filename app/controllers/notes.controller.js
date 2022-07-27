@@ -3,10 +3,13 @@ const {v4: uuidv4} = require('uuid');
 
 
 //Get all notes
-const getAllNotes = async (res, req, next) =>{
+const getAllNotes = async (req, res, next) =>{
     try {
         
-        // const dbNotes = await pool.query("SELECT * FROM note ")        
+        const user = req.dbUser;
+        console.log(user)
+
+        // const dbNotes = await pool.query("SELECT * FROM note WHERE  ")        
         
     } catch (error) {
         console.log(error.message);
@@ -16,7 +19,7 @@ const getAllNotes = async (res, req, next) =>{
 }
 
 //Add a new note
-const createNote = async (res, req, next) =>{
+const createNote = async (req, res, next) =>{
     try {
         
     } catch (error) {
@@ -26,7 +29,7 @@ const createNote = async (res, req, next) =>{
 }
 
 //Find note by Id
-const findNoteById = async (res, req, next) =>{
+const findNoteById = async (req, res, next) =>{
     try {
         
     } catch (error) {
@@ -36,7 +39,7 @@ const findNoteById = async (res, req, next) =>{
 }
 
 //Update an existing note
-const updateNoteById = async (res, req, next) =>{
+const updateNoteById = async (req, res, next) =>{
     try {
         
     } catch (error) {
@@ -46,7 +49,7 @@ const updateNoteById = async (res, req, next) =>{
 }
 
 //Delete a note
-const deleteNoteById = async (res, req, next) =>{
+const deleteNoteById = async (req, res, next) =>{
     try {
         
     } catch (error) {

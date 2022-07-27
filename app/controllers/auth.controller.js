@@ -4,7 +4,7 @@ const User = require('../util/user.db.query');
 const {v4: uuidv4} = require('uuid');
 const crypto = require('crypto');
 
-const signin  = async (req, res, next ) => {
+const login  = async (req, res, next ) => {
     try {
 
         const dbUser = await User.findOne(req.body.username);
@@ -45,6 +45,27 @@ const signin  = async (req, res, next ) => {
     }
 };
 
+const logout = async(req, res, next) => {
+    try {
+        const token = req.headers["x-access-token"];
+        
+        const tokenInfo = (await pool.query("UPDATE user_authentication SET deleted_at = NOW() WHERE token = $1 RETURNING id, user_id, guid, created_at, deleted_at ", [token])).rows[0];
+
+        res.status(205).send(tokenInfo);
+        
+
+
+    } catch (error) {
+
+        console.log(error);
+        next();
+        
+    }
+}
+
+
 module.exports = {
-    signin,
+    login,
+    logout,
+    
 }

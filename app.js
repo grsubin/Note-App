@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({extended : true}))
 
 const swaggerOptions = {
     swaggerDefinition: {
-        openapi:'3.0.0',
+        openapi:"3.0.1",
         info: {
             title: 'Note API',
             version: '1.0.0'
@@ -32,13 +32,12 @@ const swaggerOptions = {
         securitySchemes: {
             bearerAuth: {
                 type: "http", 
-                scheme: "bearer",
-                bearerFormat: "JWT",
+                scheme: "bearer"
             },
         },
     },
     apis: ["./doc/*.yaml"],
-}
+};
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 console.log(swaggerDocs);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs));

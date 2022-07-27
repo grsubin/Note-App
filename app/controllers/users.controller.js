@@ -93,8 +93,16 @@ const updateUser = async(req,res,next) => {
 try {
 
 
+    const username = req.params.username;
+
+    //Doesn't all action to other user other than the authorized user.
+    console.log(req.dbUser.username, username);
+    if(req.dbUser.username != username){
+        let error = new Error("Unauthorized action!");
+        error.code = 401;
+        throw error;
+    }
     //Checks if the username is available and is not deleted. 
-        const username = req.params.username;
         const dbUser = (await pool.query("SELECT * from users WHERE username = $1 AND deleted_at IS NULL", [username])).rows[0];
         if(!dbUser){
             throw new Error("User not available.");
@@ -111,18 +119,17 @@ try {
             }else if ((await pool.query("SELECT * FROM users WHERE email = $1 AND deleted_at IS NULL", [user.email])).rows[0]){
                 throw new Error ("Email already in use.")
             } else {
-
                 // Only updates the fields which are provided in the request body else the previous data from the database is used.
                 dbUser.username = !user.username ? dbUser.username: user.username;
 
-                dbUser.firstName = !user.firstName ? dbUser.firstName : user.firstName;
-                dbUser.lastName = !user.lastName ? dbUser.lastName : user.lastName;
+                dbUser.first_name = !user.firstName ? dbUser.first_name : user.firstName;
+                dbUser.last_name = !user.lastName ? dbUser.last_name : user.lastName;
                 dbUser.email = !user.email ? dbUser.email : user.email;
                 dbUser.password = !user.password ? dbUser.password : bcrypt.hashSync(user.password,8);
                 dbUser.phone = !user.phone ? dbUser.phone : user.phone;
 
                 const updatedUser = (await pool.query("UPDATE users SET username = $1, first_name = $2, last_name = $3, email = $4, password = $5, phone = $6, updated_at = NOW() RETURNING *",
-                [dbUser.username, dbUser.firstName, dbUser.lastName, dbUser.email, dbUser.password, dbUser.phone])).rows[0];
+                [dbUser.username, dbUser.first_name, dbUser.last_name, dbUser.email, dbUser.password, dbUser.phone])).rows[0];
 
                 console.error(updatedUser);
                 res.json(updatedUser);
@@ -133,7 +140,7 @@ try {
     
     } catch (error) {
 
-        console.log(error.message);
+        console.log(error);
         next(error.message);
         
     }
@@ -145,6 +152,11 @@ const deleteUserByUsername = async(req,res,next) =>{
     try {
 
         const username = req.params.username;
+        if(req.dbUsername === username){
+            let error = new error("Unauthorized action!");
+            error.code = 401;
+            throw error;
+        }
         const dbUser =  (await pool.query("UPDATE users SET deleted_at = NOW() WHERE username = $1 AND deleted_at IS NULL RETURNING *", [username])).rows[0];
         if(!dbUser){
             throw new Error("Username not found.");
