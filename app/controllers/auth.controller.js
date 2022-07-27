@@ -26,7 +26,7 @@ const signin  = async (req, res, next ) => {
             console.log(userAuthInfo)
             res.status(200).send({
                 id: userAuthInfo.id,
-                UserId: userAuthInfo.user_id,
+                userId: userAuthInfo.user_id,
                 username: dbUser.username,
                 email: dbUser.email,
                 guid: userAuthInfo.guid,
