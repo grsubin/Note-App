@@ -39,17 +39,29 @@
 
 
 
+/api/notes/{username}:
+  get:
+      summary: "Get all notes"
+      tags: 
+      - "Note Operations"
+      security:       
+          - bearerAuth: []
+      description: "Get all Notes"
+      responses:
+          "200":
+              description: "Success"
 
 
 
-/api/notes/{noteId}:
+
+/api/notes/{id}:
 
   get:
       summary: "Find note by Id"
       tags: 
       - "Note Operations"
       parameters:
-          - name: "noteId"
+          - name: "id"
             required: true
             in: "path"
             schema: 
@@ -66,7 +78,7 @@
       tags: 
       - "Note Operations"
       parameters:
-          - name: "noteId"
+          - name: "id"
             required: true
             in: "path"
             schema: 
@@ -97,7 +109,7 @@
       tags: 
       - "Note Operations"
       parameters:
-          - name: "noteId"
+          - name: "id"
             required: true
             in: "path"
             schema: 
