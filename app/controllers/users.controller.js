@@ -96,6 +96,7 @@ try {
     const username = req.params.username;
 
     //Doesn't all action to other user other than the authorized user.
+
     if(req.dbUser.username != username){
         let error = new Error("Unauthorized action!");
         error.code = 401;
