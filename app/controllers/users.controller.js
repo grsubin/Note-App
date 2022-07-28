@@ -9,9 +9,9 @@ const getAllUsers = async(req, res, next) => {
 
         const dbUsers = await pool.query("SELECT * FROM users ");
 
-        let userList =[];
+        let userList ;
         userList = dbUsers.rows;
-        if(!userList){
+        if(dbUsers.rowCount == 0){
             throw new Error("No User Available.")
         }else{
             res.json(userList);
@@ -96,7 +96,6 @@ try {
     const username = req.params.username;
 
     //Doesn't all action to other user other than the authorized user.
-    console.log(req.dbUser.username, username);
     if(req.dbUser.username != username){
         let error = new Error("Unauthorized action!");
         error.code = 401;

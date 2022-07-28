@@ -7,11 +7,11 @@ const {auth} = require('../middleware/auth');
 router.get("/",[auth.verifyToken], notesController.getAllNotes);
 //POST (/api/notes)
 router.post("/",[auth.verifyToken], notesController.createNote);
-//GET (/api/notes/:username)
-router.get("/:username",[auth.verifyToken], notesController.findNoteById)
-//PUT (/api/notes/:username)
-router.put("/:username",[auth.verifyToken], notesController.updateNoteById);
-//DELETE (/api/notes/:username)
-router.delete("/:username",[auth.verifyToken],notesController.deleteNoteById);
+//GET (/api/notes/:id)
+router.get("/:id",[auth.verifyToken], notesController.findNoteById)
+//PUT (/api/notes/:id)
+router.put("/:id",[auth.verifyToken], notesController.updateNoteById);
+//DELETE (/api/notes/:id)
+router.delete("/:id",[auth.verifyToken],notesController.deleteNoteById);
 
 module.exports = router;

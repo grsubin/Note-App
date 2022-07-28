@@ -39,19 +39,6 @@
 
 
 
-/api/notes/{username}:
-  get:
-      summary: "Get all notes"
-      tags: 
-      - "Note Operations"
-      security:       
-          - bearerAuth: []
-      description: "Get all Notes"
-      responses:
-          "200":
-              description: "Success"
-
-
 
 
 /api/notes/{id}:
@@ -88,14 +75,14 @@
           content:
               application/json:
                   schema:
-                      type: "object "
+                      type: object
                       properties:
                           title: 
-                              type: "string"
-                              default: "Title of the Note"
+                              type: string
+                              default: Title of the Note
                           body:
-                              type: "string"
-                              default: "Body of the Note"
+                              type: string
+                              default: Body of the Note
 
       security:       
           - bearerAuth: []

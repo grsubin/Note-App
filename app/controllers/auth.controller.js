@@ -12,7 +12,7 @@ const login  = async (req, res, next ) => {
         const passwordIsValid  = bcrypt.compareSync(req.body.password, dbUser.password);
     
         if(!passwordIsValid){
-            const error = new Error("Invalid Password!")
+            let error = new Error("Invalid Password!")
             error.code = 401;
             throw error;
         }else{
