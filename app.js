@@ -22,17 +22,19 @@ app.use(bodyParser.urlencoded({extended : true}))
 
 const swaggerOptions = {
     swaggerDefinition: {
-        openapi:"3.0.1",
+        openapi:"3.0.0",
         info: {
             title: 'Note API',
             version: '1.0.0'
         },
     },
     components: {
-        securitySchemes: {
-            bearerAuth: {
-                type: "http", 
-                scheme: "bearer"
+        schemes:{
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http", 
+                    scheme: "bearer"
+                },
             },
         },
     },

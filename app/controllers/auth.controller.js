@@ -47,8 +47,7 @@ const login  = async (req, res, next ) => {
 
 const logout = async(req, res, next) => {
     try {
-        const token = req.headers["x-access-token"];
-        
+        const token = req.dbUser.token;
         const tokenInfo = (await pool.query("UPDATE user_authentication SET deleted_at = NOW() WHERE token = $1 RETURNING id, user_id, guid, created_at, deleted_at ", [token])).rows[0];
 
         res.status(205).send(tokenInfo);
