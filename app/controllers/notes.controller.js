@@ -12,7 +12,7 @@ const getAllNotes = async (req, res, next) => {
     );
     let noteList = dbNotes.rows;
     if (dbNotes.rowCount == 0) {
-      const error = new Error("User not available.");
+      const error = new Error("No notes for this user.");
       error.code = 204;
       throw error;
     } else {
@@ -30,8 +30,8 @@ const getAllNotes = async (req, res, next) => {
 const createNote = async (req, res, next) => {
   try {
     const userId = req.dbUser.id;
-    const { title, body } = req.body;
-    const guid = uuidv4();
+    let { title, body, guid } = req.body;
+    guid = !guid ? uuidv4() : guid;
 
     const dbNote = await pool.query(
       "INSERT INTO note (title, note_body, created_at, guid, user_id) VALUES ($1, $2, NOW(), $3, $4) RETURNING *",
