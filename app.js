@@ -7,8 +7,19 @@ const pool = require("./app/config/db");
 
 const app = express();
 
+var whitelist = [
+  "http://localhost:4200",
+  "http://192.168.31.22:8080",
+  "http://127.0.0.1:8080",
+];
 var corsOptions = {
-  origin: "http://localhost:4200",
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
 };
 
 app.use(express.json());
