@@ -1,3 +1,0 @@
-CREATE DATABASE NoteApp
-
-CREATE TABLE user
