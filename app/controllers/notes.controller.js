@@ -73,8 +73,6 @@ const findNoteById = async (req, res, next) => {
     });
   }
 };
-
-//Update an existing note
 const updateNoteById = async (req, res, next) => {
   try {
     const userId = req.dbUser.id;
