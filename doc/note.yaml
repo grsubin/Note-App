@@ -1,114 +1,114 @@
-
-
 /api/notes:
   get:
-      summary: "Get all notes"
-      tags: 
+    summary: "Get all notes"
+    tags:
       - "Note Operations"
-      security:       
-          - bearerAuth: []
-      description: "Get all Notes"
-      responses:
-          "200":
-              description: "Success"
+    security:
+      - bearerAuth: []
+    description: "Get all Notes"
+    responses:
+      "200":
+        description: "Success"
 
   post:
-      summary: Add a new note
-      tags: 
+    summary: Add a new note
+    tags:
       - "Note Operations"
-      security:       
-          - bearerAuth: []
-      description: Create new note 
-      requestBody:
-          required: true
-          content:
-              application/json:
-                  schema:
-                      type: object 
-                      properties:
-                          title: 
-                              type: string
-                              default: Title of the Note
-                          body:
-                              type: string
-                              default: Body of the Note
-          
-      responses:
-          201: 
-              description: Created
+    security:
+      - bearerAuth: []
+    description: Create new note
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                default: Title of the Note
+              body:
+                type: string
+                default: Body of the Note
+              start_date:
+                type: string
+                default: string
+              end_date:
+                type: string
+                default: string
 
-
-
-
+    responses:
+      201:
+        description: Created
 
 /api/notes/{id}:
-
   get:
-      summary: "Find note by Id"
-      tags: 
+    summary: "Find note by Id"
+    tags:
       - "Note Operations"
-      parameters:
-          - name: "id"
-            required: true
-            in: "path"
-            schema: 
-              type: "integer"
-      security:       
-          - bearerAuth: []
-      description: "Get a single note item"
-      responses:
-          "200":
-              description: "Success"
+    parameters:
+      - name: "id"
+        required: true
+        in: "path"
+        schema:
+          type: "integer"
+    security:
+      - bearerAuth: []
+    description: "Get a single note item"
+    responses:
+      "200":
+        description: "Success"
 
   put:
-      summary: "Update an existing note"
-      tags: 
+    summary: "Update an existing note"
+    tags:
       - "Note Operations"
-      parameters:
-          - name: "id"
-            required: true
-            in: "path"
-            schema: 
-              type: "integer"
-      requestBody:
-          required: true
-          content:
-              application/json:
-                  schema:
-                      type: object
-                      properties:
-                          title: 
-                              type: string
-                              default: Title of the Note
-                          body:
-                              type: string
-                              default: Body of the Note
+    parameters:
+      - name: "id"
+        required: true
+        in: "path"
+        schema:
+          type: "integer"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                default: Title of the Note
+              body:
+                type: string
+                default: Body of the Note
+              start_date:
+                type: string
+                default: string
+              end_date:
+                type: string
+                default: string
 
-      security:       
-          - bearerAuth: []
-      description: "Get all Notes"
-      responses:
-          "200":
-              description: "Success"
+    security:
+      - bearerAuth: []
+    description: "Get all Notes"
+    responses:
+      "200":
+        description: "Success"
 
   delete:
-      summary: "Delete a note"
-      tags: 
+    summary: "Delete a note"
+    tags:
       - "Note Operations"
-      parameters:
-          - name: "id"
-            required: true
-            in: "path"
-            schema: 
-              type: "integer"
-      security:       
-          - bearerAuth: []
-      description: "Get all Notes"
-      responses:
-          "200":
-              description: "Success"
-
-
-
-
-
+    parameters:
+      - name: "id"
+        required: true
+        in: "path"
+        schema:
+          type: "integer"
+    security:
+      - bearerAuth: []
+    description: "Get all Notes"
+    responses:
+      "200":
+        description: "Success"
