@@ -1,9 +1,9 @@
-const express = require("express");
-const swaggerJsDoc = require("swagger-jsdoc");
-const swaggerUI = require("swagger-ui-express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const pool = require("./app/config/db");
+import express from "express";
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUI from "swagger-ui-express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import pool from "./app/config/db";
 
 const app = express();
 
@@ -53,10 +53,10 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 console.log(swaggerDocs);
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
-
+import route from "./app/routes";
 // // Routes
-app.use("/api", require("./app/routes"));
+app.use("/api", route);
 
 app.listen(5050, () => console.log("listening on 5050"));
 
-module.exports = app;
+export default app;

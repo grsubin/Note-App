@@ -1,6 +1,5 @@
-const pool = require("../config/db");
-const { v4: uuidv4 } = require("uuid");
-const parse = require("postgres-date");
+import pool from "../config/db";
+import { v4 as uuidv4 } from "uuid";
 
 //Get all notes
 const getAllNotes = async (req, res, next) => {
@@ -12,15 +11,14 @@ const getAllNotes = async (req, res, next) => {
     );
     let noteList = dbNotes.rows;
     if (dbNotes.rowCount == 0) {
-      const error = new Error("No notes for this user.");
-      error.code = 204;
+      const error = new ErrorHandler(204, "No notes for this user.");
       throw error;
     } else {
       res.status(200).send(noteList);
     }
   } catch (error) {
     console.log(error);
-    res.status(!error.code ? 500 : error.code).send({
+    res.status(error.status).send({
       message: error.message,
     });
   }
@@ -60,8 +58,8 @@ const findNoteById = async (req, res, next) => {
     );
     const note = dbNote.rows[0];
     if (!note) {
-      const error = new Error("No note of that Id for that User.");
-      error.code = 404;
+      const error = new ErrorHandler(404, "No note of that Id for that User.");
+
       throw error;
     }
     console.log(note);
@@ -87,8 +85,7 @@ const updateNoteById = async (req, res, next) => {
     ).rows[0];
 
     if (!dbNote) {
-      const error = new Error("No note of that Id for that User.");
-      error.code = 404;
+      const error = new ErrorHandler(404, "No note of that Id for that User.");
       throw error;
     }
 
@@ -134,8 +131,7 @@ const deleteNoteById = async (req, res, next) => {
     ).rows[0];
 
     if (!dbNote) {
-      const error = new Error("No note of that Id for that User.");
-      error.code = 404;
+      const error = new ErrorHandler(404, "No note of that Id for that User.");
       throw error;
     }
 
@@ -148,13 +144,13 @@ const deleteNoteById = async (req, res, next) => {
     res.status(200).send(deletedNote);
   } catch (error) {
     console.log(error);
-    res.status(!error.code ? 500 : error.code).send({
+    res.status(error.status).send({
       message: error.message,
     });
   }
 };
 
-module.exports = {
+export default {
   getAllNotes,
   createNote,
   findNoteById,

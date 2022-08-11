@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+import pool from "../config/db";
 
 const findOne = async (username) => {
   try {
@@ -9,8 +9,7 @@ const findOne = async (username) => {
       )
     ).rows[0];
     if (!dbUser) {
-      const error = new Error("User not available.");
-      error.code = 404;
+      const error = new ErrorHandler(404, "User not available.");
       throw error;
     } else {
       return dbUser;
@@ -20,6 +19,6 @@ const findOne = async (username) => {
   }
 };
 
-module.exports = {
+export default {
   findOne,
 };

@@ -1,7 +1,7 @@
-const pool = require("../config/db");
-const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
-const User = require("../util/user.db.query");
+import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcrypt";
+import User from "../util/user.db.query";
+import pool from "../config/db";
 
 //Get all users
 const getAllUsers = async (req, res, next) => {
@@ -11,7 +11,7 @@ const getAllUsers = async (req, res, next) => {
     let userList;
     userList = dbUsers.rows;
     if (dbUsers.rowCount == 0) {
-      throw new Error("No User Available.");
+      throw new ErrorHandler(404, "No User Available.");
     } else {
       res.json(userList);
     }
@@ -42,7 +42,7 @@ const createUser = async (req, res, next) => {
         )
       ).rowCount !== 0
     ) {
-      throw new Error("username already in use.");
+      throw new ErrorHandler(409, "username already in use.");
     } else if (
       (
         await pool.query(
@@ -51,7 +51,7 @@ const createUser = async (req, res, next) => {
         )
       ).rowCount !== 0
     ) {
-      throw new Error("Email already in use");
+      throw new ErrorHandler(409, "Email already in use");
     } else {
       const dbUser = await pool.query(
         "INSERT INTO users (username, first_name, last_name, email, password, phone, guid, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING username, first_name, last_name, email, password, phone, guid, created_at",
@@ -65,7 +65,7 @@ const createUser = async (req, res, next) => {
     }
   } catch (error) {
     console.error(error.message);
-    res.status(!error.code ? 500 : error.code).send({
+    res.status(error.status).send({
       message: error.message,
     });
   }
@@ -101,8 +101,7 @@ const updateUser = async (req, res, next) => {
     //Doesn't all action to other user other than the authorized user.
 
     if (req.dbUser.username != username) {
-      let error = new Error("Unauthorized action!");
-      error.code = 401;
+      let error = new ErrorHandler(401, "Unauthorized action!");
       throw error;
     }
     //Checks if the username is available and is not deleted.
@@ -113,7 +112,7 @@ const updateUser = async (req, res, next) => {
       )
     ).rows[0];
     if (!dbUser) {
-      throw new Error("User not available.");
+      throw new ErrorHandler(404, "User not available.");
     } else {
       // Checks if the username is already taken and is not deleted.
 
@@ -126,7 +125,7 @@ const updateUser = async (req, res, next) => {
           )
         ).rows[0]
       ) {
-        throw new Error("Username already taken.");
+        throw new ErrorHandler(409, "Username already taken.");
 
         // Checks if the email is already taken and is not deleted.
       } else if (
@@ -137,7 +136,7 @@ const updateUser = async (req, res, next) => {
           )
         ).rows[0]
       ) {
-        throw new Error("Email already in use.");
+        throw new ErrorHandler(409, "Email already in use.");
       } else {
         // Only updates the fields which are provided in the request body else the previous data from the database is used.
         dbUser.username = !user.username ? dbUser.username : user.username;
@@ -181,8 +180,7 @@ const deleteUserByUsername = async (req, res, next) => {
   try {
     const username = req.params.username;
     if (req.dbUsername === username) {
-      let error = new error("Unauthorized action!");
-      error.code = 401;
+      let error = new ErrorHandler(401, "Unauthorized action!");
       throw error;
     }
     const dbUser = (
@@ -192,17 +190,18 @@ const deleteUserByUsername = async (req, res, next) => {
       )
     ).rows[0];
     if (!dbUser) {
-      throw new Error("Username not found.");
+      throw new ErrorHandler(409, "Username not found.");
     } else {
       res.json(dbUser);
     }
   } catch (error) {
-    console.error(error.message);
-    next(error.message);
+    res.status(error.status).send({
+      message: error.message,
+    });
   }
 };
 
-module.exports = {
+export default {
   createUser,
   getAllUsers,
   findUserByUsername,

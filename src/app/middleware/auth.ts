@@ -1,4 +1,4 @@
-const pool = require("../config/db");
+import pool from "../config/db";
 
 const checkUserExistedById = async (id) => {
   const dbUser = (
@@ -17,13 +17,12 @@ const verifyToken = async (req, res, next) => {
     const token = tokenHeader.split(" ")[1];
     const bearer = tokenHeader.split(" ")[0];
     if (bearer != "Bearer") {
-      let error = new Error("Bearer no present");
-      error.code = 403;
+      let error = new ErrorHandler(403, "Bearer no present");
       throw error;
     }
     if (!token) {
-      let error = new Error("No token provided!");
-      error.code = 403;
+      let error = new ErrorHandler(403, "No token provided!");
+
       throw error;
     } else {
       const dbUserIdObj = (
@@ -34,13 +33,11 @@ const verifyToken = async (req, res, next) => {
       ).rows[0];
       const dbUserId = !dbUserIdObj ? null : dbUserIdObj["user_id"];
       if (!dbUserId) {
-        let error = new Error("unauthorized!");
-        error.code = 401;
+        let error = new ErrorHandler(401, "unauthorized!");
         throw error;
       } else {
         if (!(await checkUserExistedById(dbUserId))) {
-          const error = new Error("User not available.");
-          error.code = 404;
+          const error = new ErrorHandler(404, "User not available.");
           throw error;
         } else {
           req.dbUser = (
@@ -60,17 +57,15 @@ const verifyToken = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(!error.code ? 500 : error.code).send({
+    res.status(error.status).send({
       message: error.message,
     });
   }
 };
 
 const auth = {
-  verifyToken: verifyToken,
-  checkUserExistedById,
+  verifyToken,
   checkUserExistedById,
 };
-module.exports = {
-  auth,
-};
+
+export default auth;
