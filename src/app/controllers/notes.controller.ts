@@ -1,8 +1,14 @@
 import pool from "../config/db";
 import { v4 as uuidv4 } from "uuid";
+import { NextFunction, Request, Response } from "express";
+import {
+  ErrorHandler,
+  getErrorMessage,
+  getErrorStatusCode,
+} from "../util/ErrorHandler";
 
 //Get all notes
-const getAllNotes = async (req, res, next) => {
+const getAllNotes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.dbUser.id;
     const dbNotes = await pool.query(
@@ -18,14 +24,14 @@ const getAllNotes = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(error.status).send({
-      message: error.message,
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };
 
 //Add a new note
-const createNote = async (req, res, next) => {
+const createNote = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.dbUser.id;
     let { title, body, guid, start_date, end_date } = req.body;
@@ -39,15 +45,19 @@ const createNote = async (req, res, next) => {
 
     res.status(201).send(note);
   } catch (error) {
-    console.log(error.message);
-    res.status(error.code ? 500 : error.code).send({
-      message: error.message,
+    console.log(error);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };
 
 //Find note by Id
-const findNoteById = async (req, res, next) => {
+const findNoteById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.dbUser.id;
     const noteId = req.params.id;
@@ -65,13 +75,17 @@ const findNoteById = async (req, res, next) => {
     console.log(note);
     res.status(200).send(note);
   } catch (error) {
-    console.log(error.message);
-    res.status(error.code ? 500 : error.code).send({
-      message: error.message,
+    console.log(error);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };
-const updateNoteById = async (req, res, next) => {
+const updateNoteById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.dbUser.id;
     const noteId = req.params.id;
@@ -110,15 +124,19 @@ const updateNoteById = async (req, res, next) => {
 
     res.status(200).send(updatedNote);
   } catch (error) {
-    console.log(error.message);
-    res.status(error.code ? 500 : error.code).send({
-      message: error.message,
+    console.log(error);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };
 
 //Delete a note
-const deleteNoteById = async (req, res, next) => {
+const deleteNoteById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userId = req.dbUser.id;
     const noteId = req.params.id;
@@ -144,8 +162,8 @@ const deleteNoteById = async (req, res, next) => {
     res.status(200).send(deletedNote);
   } catch (error) {
     console.log(error);
-    res.status(error.status).send({
-      message: error.message,
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };

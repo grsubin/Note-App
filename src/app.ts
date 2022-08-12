@@ -12,9 +12,9 @@ var whitelist = [
   "http://192.168.31.22:8080",
   "http://127.0.0.1:8080",
 ];
-var corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
+var corsOptions: cors.CorsOptions = {
+  origin: (origin: string | undefined, callback: Function) => {
+    if (whitelist.indexOf(origin as string) !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));

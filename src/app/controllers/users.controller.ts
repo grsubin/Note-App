@@ -2,9 +2,15 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import User from "../util/user.db.query";
 import pool from "../config/db";
+import {
+  ErrorHandler,
+  getErrorMessage,
+  getErrorStatusCode,
+} from "../util/ErrorHandler";
+import { NextFunction, Request, Response } from "express";
 
 //Get all users
-const getAllUsers = async (req, res, next) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dbUsers = await pool.query("SELECT * FROM users ");
 
@@ -16,13 +22,14 @@ const getAllUsers = async (req, res, next) => {
       res.json(userList);
     }
   } catch (error) {
-    console.log(error.message);
-    next(error.message);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
+    });
   }
 };
 
 //Post new User
-const createUser = async (req, res, next) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     let { username, firstName, lastName, email, password, phone } = req.body;
     username = username.toLowerCase();
@@ -64,15 +71,19 @@ const createUser = async (req, res, next) => {
       // console.log(user);
     }
   } catch (error) {
-    console.error(error.message);
-    res.status(error.status).send({
-      message: error.message,
+    console.error(error);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };
 
 //Find user by Username
-const findUserByUsername = async (req, res, next) => {
+const findUserByUsername = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const username = req.params.username;
 
@@ -85,16 +96,16 @@ const findUserByUsername = async (req, res, next) => {
     // }
     res.json(dbUser);
   } catch (error) {
-    console.error(error.message);
-    res.status(!error.code ? 500 : error.code).send({
-      message: error.message,
+    console.error(error);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
     // next(error.message);
   }
 };
 
 //Update User
-const updateUser = async (req, res, next) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const username = req.params.username;
 
@@ -170,16 +181,21 @@ const updateUser = async (req, res, next) => {
       }
     }
   } catch (error) {
-    console.log(error);
-    next(error.message);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
+    });
   }
 };
 
 //Delete User
-const deleteUserByUsername = async (req, res, next) => {
+const deleteUserByUsername = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const username = req.params.username;
-    if (req.dbUsername === username) {
+    if (req.dbUser.username === username) {
       let error = new ErrorHandler(401, "Unauthorized action!");
       throw error;
     }
@@ -195,8 +211,9 @@ const deleteUserByUsername = async (req, res, next) => {
       res.json(dbUser);
     }
   } catch (error) {
-    res.status(error.status).send({
-      message: error.message,
+    console.log(error);
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };

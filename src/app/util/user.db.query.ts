@@ -1,6 +1,7 @@
 import pool from "../config/db";
+import { ErrorHandler } from "./ErrorHandler";
 
-const findOne = async (username) => {
+const findOne = async (username: string) => {
   try {
     const dbUser = (
       await pool.query(

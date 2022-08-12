@@ -1,6 +1,13 @@
+import { Request, Response, NextFunction } from "express";
+import {
+  ErrorHandler,
+  getErrorMessage,
+  getErrorStatusCode,
+} from "../util/ErrorHandler";
+
 import pool from "../config/db";
 
-const checkUserExistedById = async (id) => {
+const checkUserExistedById = async (id: number) => {
   const dbUser = (
     await pool.query(
       "SELECT * FROM users WHERE id = $1 AND deleted_at IS NULL",
@@ -11,11 +18,11 @@ const checkUserExistedById = async (id) => {
   return dbUser ? true : false;
 };
 
-const verifyToken = async (req, res, next) => {
+const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let tokenHeader = req.headers["authorization"];
-    const token = tokenHeader.split(" ")[1];
-    const bearer = tokenHeader.split(" ")[0];
+    let tokenHeader: string | undefined = req.headers["authorization"];
+    const token = tokenHeader?.split(" ")[1];
+    const bearer = tokenHeader?.split(" ")[0];
     if (bearer != "Bearer") {
       let error = new ErrorHandler(403, "Bearer no present");
       throw error;
@@ -46,10 +53,11 @@ const verifyToken = async (req, res, next) => {
               [dbUserId]
             )
           ).rows[0];
-          console.log(req.dbUser);
+
           req.dbUser.id = dbUserId;
 
           req.dbUser.token = token;
+          console.log(req.dbUser);
         }
 
         next();
@@ -57,8 +65,8 @@ const verifyToken = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
-    res.status(error.status).send({
-      message: error.message,
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };

@@ -3,8 +3,14 @@ import bcrypt from "bcrypt";
 import User from "../util/user.db.query";
 import { v4 as uuidv4 } from "uuid";
 import crypto from "crypto";
+import { NextFunction, Request, Response } from "express";
+import {
+  ErrorHandler,
+  getErrorMessage,
+  getErrorStatusCode,
+} from "../util/ErrorHandler";
 
-const login = async (req, res, next) => {
+const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const dbUser = await User.findOne(req.body.username);
 
@@ -42,13 +48,13 @@ const login = async (req, res, next) => {
     console.error(error);
 
     // next(error);
-    res.status(error.status).send({
-      message: error.message,
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
     });
   }
 };
 
-const logout = async (req, res, next) => {
+const logout = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.dbUser.token;
     const tokenInfo = (
@@ -61,7 +67,9 @@ const logout = async (req, res, next) => {
     res.status(205).send(tokenInfo);
   } catch (error) {
     console.log(error);
-    next();
+    res.status(getErrorStatusCode(error)).send({
+      message: getErrorMessage(error),
+    });
   }
 };
 
